@@ -2,12 +2,40 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const QRCode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
+import axios from 'axios';
 
 // Save state to a file
 function saveState(state:{}) {
     fs.writeFileSync('state.json', JSON.stringify(state));
 }
+async function downloadQRCode() {
+    const url = 'https://whatsapp-bot-r5vm.onrender.com/qr-code.png';
+    const filePath = path.resolve(__dirname, 'qr-code.png');
+  
+    try {
+      const response = await axios({
+        method: 'get',
+        url: url,
+        responseType: 'stream', // This is necessary to handle the binary file
+      });
+  
+      const writer = fs.createWriteStream(filePath);
+  
+      response.data.pipe(writer);
+  
+      writer.on('finish', () => {
+        console.log('QR code downloaded successfully');
+      });
+  
+      writer.on('error', (err:any) => {
+        console.error('Error downloading the QR code', err);
+      });
+    } catch (error) {
+      console.error('Error fetching QR code:', error);
+    }
+  }
 
+  
 // Load state from a file
 function loadState() {
     console.log(fs.existsSync('state.json'));
@@ -42,6 +70,7 @@ client.on('qr', async (qr:any) => {
             }
         });
         
+        downloadQRCode();
         console.log(`Download your qr code here: ${process.env.url}/qr-code.png`);
         console.log('QR Code saved as qr-code.png!');
     } catch (error) {
