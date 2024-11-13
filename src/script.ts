@@ -281,7 +281,7 @@ client.on('message_create', async (message:any) => {
                     });
 
                     // Construct the message with @mentions for each participant
-                    const mentionText = `@${mentions.map((participant:any) => participant.notify).join(', @')}!`; 
+                    const mentionText = `@${mentions.map((participant:any) => participant.notify).join(' @')}!`; 
 
                     // Send the message with mentions
                     await chat.sendMessage(mentionText, { mentions: mentions.map((participant:any) => participant.id) });
