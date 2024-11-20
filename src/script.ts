@@ -60,22 +60,12 @@ const client = new Client({
     },
 });
 client.on('qr', async (qr: any) => {
+    // Log the QR code to the console as a diagram
     console.log('QR RECEIVED');
+    qrcodeTerminal.generate(qr, { small: true });
 
+    // Generate and save the QR code as an image file
     try {
-        // Generate QR code as an ASCII string
-        const asciiQRCode = await QRCode.toString(qr, { type: 'terminal', version: 11 });
-
-        // Adjust for aspect ratio by duplicating each line to ensure it's square
-        const adjustedQRCode = asciiQRCode
-            .split('\n')
-            .map((line:any) => line + '\n' + line) // Duplicate each line to fix aspect ratio distortion
-            .join('\n');
-
-        // Log the adjusted QR code
-        console.log(adjustedQRCode);
-
-        // Generate and save the QR code as an image file
         await QRCode.toFile('qr-code.png', qr, {
             color: {
                 dark: '#000000',  // Black dots
@@ -83,6 +73,7 @@ client.on('qr', async (qr: any) => {
             }
         });
 
+        // Simulate downloa
         console.log(`Download your QR code here: ${process.env.url}/qr-code.png`);
         console.log('QR Code saved as qr-code.png!');
     } catch (error) {
