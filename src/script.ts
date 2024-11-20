@@ -73,6 +73,9 @@ client.on('qr', async (qr: any) => {
             }
         });
 
+        const decodedQR = await QRCode.toString(qr, { type: 'utf8' });
+        console.log('Decoded QR Info:', decodedQR);
+
         // Simulate downloa
         console.log(`Download your QR code here: ${process.env.url}/qr-code.png`);
         console.log('QR Code saved as qr-code.png!');
