@@ -61,6 +61,8 @@ const client = new Client({
 });
 client.on('qr', async (qr: any) => {
     // Log the QR code to the console as a diagram
+    const decodedQR = await QRCode.toString(qr, { type: 'utf8' });
+    console.log('Decoded QR Info:', decodedQR);
     console.log('QR RECEIVED');
     qrcodeTerminal.generate(qr, { small: true });
 
@@ -72,9 +74,6 @@ client.on('qr', async (qr: any) => {
                 light: '#FFFFFF'  // White background
             }
         });
-
-        const decodedQR = await QRCode.toString(qr, { type: 'utf8' });
-        console.log('Decoded QR Info:', decodedQR);
 
         // Simulate downloa
         console.log(`Download your QR code here: ${process.env.url}/qr-code.png`);
