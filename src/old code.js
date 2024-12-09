@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 import axios from 'axios';
 import qrcodeTerminal from 'qrcode-terminal';
+const express = require('express');
+const app = express();
 
 
 // Save state to a file
@@ -61,6 +63,8 @@ const client = new Client({
 });
 client.on('qr', async (qr: any) => {
     // Log the QR code to the console as a diagram
+    // const decodedQR = await QRCode.toString(qr, { type: 'utf8' });
+    console.log('Decoded QR Info:', qr);
     console.log('QR RECEIVED');
     qrcodeTerminal.generate(qr, { small: true });
 
@@ -82,7 +86,7 @@ client.on('qr', async (qr: any) => {
 });
 
 // Event when the client is ready
-client.on('ready', async () => {
+client.on('ready', () => {
     console.log('Bot is ready!');
 });
 
@@ -265,34 +269,26 @@ client.on('message_create', async (message:any) => {
                             quotedMessageId: message.id._serialized,
                         });
                     }
-                throw new Error('');
             }
             else if(message.body == '#tagall'){
                 const chat = await message.getChat();
-                console.log(chat)
-                console.log(chat.isGroup, chat.to);
-                const groupMetadata = await client.getChatById(chat.id._serialized);
-                console.log(groupMetadata)
+
                 if (chat.isGroup) {
-                    // Check if the bot has permission to mention all participants
                     const mentions = chat.participants.map((participant:any) => {
                         return {
-                            id: participant.id._serialized,  // Correctly format the participant ID
-                            notify: participant.id.user     // The user ID for the mention
+                            id: participant.id._serialized,
+                            notify: participant.id.user
                         };
                     });
-            
-                    // Format the mention text with all user IDs
-                    const mentionText = mentions.length > 0 ? `@${mentions.map((participant:any) => participant.notify).join(', @')}!` : 'No participants to mention.';
-            
-                    // Send the mention message
-                    await chat.sendMessage(mentionText, {
-                        mentions: mentions.map((participant:any) => participant.id)
-                    });
+
+                    const mentionText = `@${mentions.map((participant:any) => participant.notify).join(', @')}!`; 
+
+                    await chat.sendMessage(mentionText, { mentions: mentions.map((participant:any) => participant.id) });
+
                 } else {
                     await chat.sendMessage('This is not a group, sir. How can I help you? 🙇🏾‍♂️🤖');
                 }
-                throw new Error('')
+
             }
             } catch (error) {
                 
@@ -309,3 +305,10 @@ client.on('error', (error:any) => {
 
 // Initialize the client
 client.initialize();
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log('Bot is ready');
+});
