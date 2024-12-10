@@ -79,6 +79,9 @@ client.on('qr', async (qr: any) => {
         // Simulate downloa
         console.log(`Download your QR code here: ${process.env.url}/qr-code.png`);
         console.log('QR Code saved as qr-code.png!');
+        app.listen(3000, '0.0.0.0', () => {
+            console.log(`Server is running on port ${3000}`);
+        });
     } catch (error) {
         console.error('Error generating QR code:', error);
     }
@@ -87,9 +90,6 @@ client.on('qr', async (qr: any) => {
 // Event when the client is ready
 client.on('ready', async () => {
     console.log('Bot is ready!');
-    app.listen(3000, '0.0.0.0', () => {
-        console.log(`Server is running on port ${3000}`);
-    });
 });
 
 
