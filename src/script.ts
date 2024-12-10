@@ -87,6 +87,9 @@ client.on('qr', async (qr: any) => {
 // Event when the client is ready
 client.on('ready', async () => {
     console.log('Bot is ready!');
+    app.listen(3000, () => {
+        console.log(`Server is running on port ${3000}`);
+    });
 });
 
 // Event to handle incoming messages
@@ -312,8 +315,3 @@ client.on('error', (error:any) => {
 
 // Initialize the client
 client.initialize();
-
-
-app.listen(3000, () => {
-    console.log(`Server is running on port ${3000}`);
-});
