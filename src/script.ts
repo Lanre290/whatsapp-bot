@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 import axios from 'axios';
 import qrcodeTerminal from 'qrcode-terminal';
+import express from 'express';
+
+const app = express();
 
 
 // Save state to a file
@@ -309,3 +312,8 @@ client.on('error', (error:any) => {
 
 // Initialize the client
 client.initialize();
+
+
+app.listen(3000, () => {
+    console.log(`Server is running on port ${3000}`);
+});
