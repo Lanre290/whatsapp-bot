@@ -87,10 +87,22 @@ client.on('qr', async (qr: any) => {
 // Event when the client is ready
 client.on('ready', async () => {
     console.log('Bot is ready!');
-    app.listen(3000, () => {
+    app.listen(3000, '0.0.0.0', () => {
         console.log(`Server is running on port ${3000}`);
     });
 });
+
+
+client.on('authenticated', () => {
+    console.log('Authenticated successfully!');
+});
+client.on('auth_failure', (message: any) => {
+    console.error('Authentication failed:', message);
+});
+client.on('disconnected', (reason : any) => {
+    console.log('Client was disconnected:', reason);
+});
+
 
 // Event to handle incoming messages
 client.on('message', async (message:any) => {
