@@ -3,10 +3,10 @@ const QRCode = require('qrcode');
 const fs = require('fs');
 const path = require('path');
 import axios from 'axios';
-import qrcodeTerminal from 'qrcode-terminal';
-import express from 'express';
+// import qrcodeTerminal from 'qrcode-terminal';
+// import express from 'express';
 
-const app = express();
+// const app = express();
 
 
 // Save state to a file
@@ -43,7 +43,6 @@ async function downloadQRCode() {
   
 // Load state from a file
 function loadState() {
-    console.log(fs.existsSync('state.json'));
     if (fs.existsSync('state.json')) {
         return JSON.parse(fs.readFileSync('state.json'));
     }
@@ -57,7 +56,9 @@ function loadState() {
 
 // Initialize the client
 const client = new Client({
-    authStrategy: new LocalAuth(),
+    authStrategy: new LocalAuth({
+        clientId: 'client1234'
+    }),
     puppeteer: {
         headless: true, // Set to true for production
     },
@@ -79,9 +80,9 @@ client.on('qr', async (qr: any) => {
         // Simulate downloa
         console.log(`Download your QR code here: ${process.env.url}/qr-code.png`);
         console.log('QR Code saved as qr-code.png!');
-        app.listen(3000, '0.0.0.0', () => {
-            console.log(`Server is running on port ${3000}`);
-        });
+        // app.listen(3000, '0.0.0.0', () => {
+        //     console.log(`Server is running on port ${3000}`);
+        // });
     } catch (error) {
         console.error('Error generating QR code:', error);
     }
@@ -130,7 +131,6 @@ client.on('message', async (message:any) => {
 client.on('message_create', async (message:any) => {
     // Log outgoing messages
     let isOn = loadState();
-    console.log(isOn);
     let chatId = message.isGroupMsg ? message.from : message.to;
 
     if (message.body == '#bot wake up son') {
@@ -159,7 +159,6 @@ client.on('message_create', async (message:any) => {
     if(isOn.on == true){
         if (message.fromMe) {
             try {
-                console.log('Sent message: ', message.body);
             if(message.body.startsWith('#')){
                 await message.react('🤖');
             }
@@ -287,10 +286,7 @@ client.on('message_create', async (message:any) => {
             }
             else if(message.body == '#tagall'){
                 const chat = await message.getChat();
-                console.log(chat)
                 console.log(chat.isGroup, chat.to);
-                const groupMetadata = await client.getChatById(chat.id._serialized);
-                console.log(groupMetadata)
                 if (chat.isGroup) {
                     // Check if the bot has permission to mention all participants
                     const mentions = chat.participants.map((participant:any) => {
