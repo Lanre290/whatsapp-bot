@@ -65,7 +65,7 @@ const client = new Client({
 client.on('qr', async (qr: any) => {
     // Log the QR code to the console as a diagram
     console.log('QR RECEIVED', qr);
-    qrcodeTerminal.generate(qr, { small: true });
+    // qrcodeTerminal.generate(qr, { small: true });
 
     // Generate and save the QR code as an image file
     try {
